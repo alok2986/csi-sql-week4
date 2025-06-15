@@ -1,153 +1,167 @@
--- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
---
--- Host: 127.0.0.1    Database: studentallotment
--- ------------------------------------------------------
--- Server version	8.0.40
+//Earlier i tried to export the file from Mysql workbench itself through server, but it seemed so cluttered it the repo. Thatswhy i am directly writing the commands below.
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---
--- Table structure for table `allotments`
---
 
-DROP TABLE IF EXISTS `allotments`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `allotments` (
-  `SubjectId` varchar(20) DEFAULT NULL,
-  `StudentId` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `allotments`
---
+CREATE DATABASE StudentAllotment;
+USE StudentAllotment;
 
-LOCK TABLES `allotments` WRITE;
-/*!40000 ALTER TABLE `allotments` DISABLE KEYS */;
-INSERT INTO `allotments` VALUES ('PO1492','159103041'),('PO1491','159103036'),('PO1491','159103039'),('PO1492','159103038'),('PO1492','159103041'),('PO1492','159103038');
-/*!40000 ALTER TABLE `allotments` ENABLE KEYS */;
-UNLOCK TABLES;
+-- Create tables
+CREATE TABLE StudentDetails (
+    StudentId VARCHAR(20) PRIMARY KEY,
+    StudentName VARCHAR(100),
+    GPA FLOAT,
+    Branch VARCHAR(10),
+    Section VARCHAR(10)
+);
 
---
--- Table structure for table `studentdetails`
---
+CREATE TABLE SubjectDetails (
+    SubjectId VARCHAR(20) PRIMARY KEY,
+    SubjectName VARCHAR(100),
+    MaxSeats INT,
+    RemainingSeats INT
+);
 
-DROP TABLE IF EXISTS `studentdetails`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `studentdetails` (
-  `StudentId` varchar(20) NOT NULL,
-  `StudentName` varchar(100) DEFAULT NULL,
-  `GPA` float DEFAULT NULL,
-  `Branch` varchar(10) DEFAULT NULL,
-  `Section` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`StudentId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE StudentPreference (
+    StudentId VARCHAR(20),
+    SubjectId VARCHAR(20),
+    Preference INT,
+    FOREIGN KEY (StudentId) REFERENCES StudentDetails(StudentId),
+    FOREIGN KEY (SubjectId) REFERENCES SubjectDetails(SubjectId)
+);
 
---
--- Dumping data for table `studentdetails`
---
+CREATE TABLE Allotments (
+    SubjectId VARCHAR(20),
+    StudentId VARCHAR(20)
+);
 
-LOCK TABLES `studentdetails` WRITE;
-/*!40000 ALTER TABLE `studentdetails` DISABLE KEYS */;
-INSERT INTO `studentdetails` VALUES ('159103036','Mohit Agarwal',8.9,'CCE','A'),('159103037','Rohit Agarwal',5.2,'CCE','A'),('159103038','Shohit Garg',7.1,'CCE','B'),('159103039','Mrinal Malhotra',7.9,'CCE','A'),('159103040','Mehreet Singh',5.6,'CCE','A'),('159103041','Arjun Tehlan',9.2,'CCE','B');
-/*!40000 ALTER TABLE `studentdetails` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE UnallotedStudents (
+    StudentId VARCHAR(20)
+);
 
---
--- Table structure for table `studentpreference`
---
 
-DROP TABLE IF EXISTS `studentpreference`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `studentpreference` (
-  `StudentId` varchar(20) DEFAULT NULL,
-  `SubjectId` varchar(20) DEFAULT NULL,
-  `Preference` int DEFAULT NULL,
-  KEY `StudentId` (`StudentId`),
-  KEY `SubjectId` (`SubjectId`),
-  CONSTRAINT `studentpreference_ibfk_1` FOREIGN KEY (`StudentId`) REFERENCES `studentdetails` (`StudentId`),
-  CONSTRAINT `studentpreference_ibfk_2` FOREIGN KEY (`SubjectId`) REFERENCES `subjectdetails` (`SubjectId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- Insert StudentDetails
+INSERT INTO StudentDetails VALUES
+('159103036', 'Mohit Agarwal', 8.9, 'CCE', 'A'),
+('159103037', 'Rohit Agarwal', 5.2, 'CCE', 'A'),
+('159103038', 'Shohit Garg', 7.1, 'CCE', 'B'),
+('159103039', 'Mrinal Malhotra', 7.9, 'CCE', 'A'),
+('159103040', 'Mehreet Singh', 5.6, 'CCE', 'A'),
+('159103041', 'Arjun Tehlan', 9.2, 'CCE', 'B');
 
---
--- Dumping data for table `studentpreference`
---
+-- Insert SubjectDetails
+INSERT INTO SubjectDetails VALUES
+('PO1491', 'Basics of Political Science', 60, 2),
+('PO1492', 'Basics of Accounting', 120, 119),
+('PO1493', 'Basics of Financial Markets', 90, 90),
+('PO1494', 'Eco philosophy', 60, 50),
+('PO1495', 'Automotive Trends', 60, 60);
 
-LOCK TABLES `studentpreference` WRITE;
-/*!40000 ALTER TABLE `studentpreference` DISABLE KEYS */;
-INSERT INTO `studentpreference` VALUES ('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5),('159103036','PO1491',1),('159103036','PO1492',2),('159103036','PO1493',3),('159103036','PO1494',4),('159103036','PO1495',5),('159103037','PO1491',1),('159103037','PO1492',2),('159103037','PO1493',3),('159103037','PO1494',4),('159103037','PO1495',5),('159103038','PO1492',1),('159103038','PO1493',2),('159103038','PO1491',3),('159103038','PO1495',4),('159103038','PO1494',5),('159103039','PO1491',1),('159103039','PO1492',2),('159103039','PO1493',3),('159103039','PO1494',4),('159103039','PO1495',5),('159103040','PO1491',1),('159103040','PO1492',2),('159103040','PO1493',3),('159103040','PO1494',4),('159103040','PO1495',5),('159103041','PO1492',1),('159103041','PO1491',2),('159103041','PO1493',3),('159103041','PO1494',4),('159103041','PO1495',5);
-/*!40000 ALTER TABLE `studentpreference` ENABLE KEYS */;
-UNLOCK TABLES;
+-- Insert Preferences for each student (example)
+INSERT INTO StudentPreference VALUES
+('159103036', 'PO1491', 1),
+('159103036', 'PO1492', 2),
+('159103036', 'PO1493', 3),
+('159103036', 'PO1494', 4),
+('159103036', 'PO1495', 5),
 
---
--- Table structure for table `subjectdetails`
---
+('159103037', 'PO1491', 1),
+('159103037', 'PO1492', 2),
+('159103037', 'PO1493', 3),
+('159103037', 'PO1494', 4),
+('159103037', 'PO1495', 5),
 
-DROP TABLE IF EXISTS `subjectdetails`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `subjectdetails` (
-  `SubjectId` varchar(20) NOT NULL,
-  `SubjectName` varchar(100) DEFAULT NULL,
-  `MaxSeats` int DEFAULT NULL,
-  `RemainingSeats` int DEFAULT NULL,
-  PRIMARY KEY (`SubjectId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+('159103038', 'PO1492', 1),
+('159103038', 'PO1493', 2),
+('159103038', 'PO1491', 3),
+('159103038', 'PO1495', 4),
+('159103038', 'PO1494', 5),
 
---
--- Dumping data for table `subjectdetails`
---
+('159103039', 'PO1491', 1),
+('159103039', 'PO1492', 2),
+('159103039', 'PO1493', 3),
+('159103039', 'PO1494', 4),
+('159103039', 'PO1495', 5),
 
-LOCK TABLES `subjectdetails` WRITE;
-/*!40000 ALTER TABLE `subjectdetails` DISABLE KEYS */;
-INSERT INTO `subjectdetails` VALUES ('PO1491','Basics of Political Science',60,0),('PO1492','Basics of Accounting',120,115),('PO1493','Basics of Financial Markets',90,90),('PO1494','Eco philosophy',60,50),('PO1495','Automotive Trends',60,60);
-/*!40000 ALTER TABLE `subjectdetails` ENABLE KEYS */;
-UNLOCK TABLES;
+('159103040', 'PO1491', 1),
+('159103040', 'PO1492', 2),
+('159103040', 'PO1493', 3),
+('159103040', 'PO1494', 4),
+('159103040', 'PO1495', 5),
 
---
--- Table structure for table `unallotedstudents`
---
+('159103041', 'PO1492', 1),
+('159103041', 'PO1491', 2),
+('159103041', 'PO1493', 3),
+('159103041', 'PO1494', 4),
+('159103041', 'PO1495', 5);
 
-DROP TABLE IF EXISTS `unallotedstudents`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `unallotedstudents` (
-  `StudentId` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Dumping data for table `unallotedstudents`
---
+DELIMITER $$
 
-LOCK TABLES `unallotedstudents` WRITE;
-/*!40000 ALTER TABLE `unallotedstudents` DISABLE KEYS */;
-INSERT INTO `unallotedstudents` VALUES ('159103040'),('159103037'),('159103036'),('159103039'),('159103040'),('159103037');
-/*!40000 ALTER TABLE `unallotedstudents` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+CREATE PROCEDURE AllocateSubjects()
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE v_studentId VARCHAR(20);
+    DECLARE v_subjectId VARCHAR(20);
+    DECLARE preference INT;
+    DECLARE remaining INT;
+    DECLARE got_allotted INT;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+    DECLARE cur CURSOR FOR
+        SELECT StudentId FROM StudentDetails ORDER BY GPA DESC;
 
--- Dump completed on 2025-06-15 21:35:06
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+
+    read_loop: LOOP
+        FETCH cur INTO v_studentId;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        SET preference = 1;
+        SET got_allotted = 0;
+
+        subject_loop: WHILE preference <= 5 DO
+            -- Prevent multiple row error
+            SELECT SubjectId INTO v_subjectId
+            FROM StudentPreference
+            WHERE StudentId = v_studentId AND Preference = preference
+            LIMIT 1;
+
+            SELECT RemainingSeats INTO remaining
+            FROM SubjectDetails
+            WHERE SubjectId = v_subjectId
+            LIMIT 1;
+
+            IF remaining > 0 THEN
+                INSERT INTO Allotments (SubjectId, StudentId)
+                VALUES (v_subjectId, v_studentId);
+
+                UPDATE SubjectDetails
+                SET RemainingSeats = RemainingSeats - 1
+                WHERE SubjectId = v_subjectId;
+
+                SET got_allotted = 1;
+                LEAVE subject_loop;
+            END IF;
+
+            SET preference = preference + 1;
+        END WHILE;
+
+        IF got_allotted = 0 THEN
+            INSERT INTO UnallotedStudents (StudentId)
+            VALUES (v_studentId);
+        END IF;
+
+    END LOOP;
+
+    CLOSE cur;
+END$$
+
+DELIMITER ;
+CALL AllocateSubjects();
+
+SELECT * FROM Allotments;
+SELECT * FROM UnallotedStudents;
